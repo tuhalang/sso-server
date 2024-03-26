@@ -1,0 +1,10 @@
+rest-server-config:
+  port: 8080
+
+database-config:
+  - space-name: normal
+    db-driver: pgx
+    host: localhost
+    port: 5432
+    username: postgres
+    password: postgres
