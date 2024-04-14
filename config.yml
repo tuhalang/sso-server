@@ -2,6 +2,10 @@ rest-server-config:
   port: 8080
   host: 0.0.0.0
 
+grpc-server-config:
+  port: 8081
+  host: 0.0.0.0
+
 tenant-config:
   - tenant-name: normal
     db-driver: pgx

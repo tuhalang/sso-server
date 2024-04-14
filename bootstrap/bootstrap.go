@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	"fmt"
+	"github.com/tuhalang/authen/api/grpc_server"
 	"github.com/tuhalang/authen/api/rest/controller"
 	"github.com/tuhalang/authen/api/rest/middleware"
 	"github.com/tuhalang/authen/api/rest/route"
@@ -55,5 +56,10 @@ func Run(configFile string) {
 	restRoute := route.NewRestRoute(loginController, validateController, loggingMiddleware)
 
 	serverAddress := fmt.Sprintf("%s:%d", appConfig.RestServer.Host, appConfig.RestServer.Port)
-	restRoute.Run(serverAddress)
+	go func() {
+		restRoute.Run(serverAddress)
+	}()
+
+	grpcServer := grpc_server.NewGrpcServer(appConfig.GrpcServer, loginUseCase, validationUseCase)
+	grpcServer.Start()
 }

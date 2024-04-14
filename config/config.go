@@ -7,12 +7,13 @@ import (
 
 // Config stores all the application configuration
 type Config struct {
-	RestServer RestServerConfig `mapstructure:"rest-server-config"`
-	Tenants    []TenantConfig   `mapstructure:"tenant-config"`
+	RestServer ServerConfig   `mapstructure:"rest-server-config"`
+	GrpcServer ServerConfig   `mapstructure:"grpc-server-config"`
+	Tenants    []TenantConfig `mapstructure:"tenant-config"`
 }
 
-// RestServerConfig stores all app rest server config
-type RestServerConfig struct {
+// ServerConfig stores all app rest server config
+type ServerConfig struct {
 	Port       int    `mapstructure:"port"`
 	Host       string `mapstructure:"host"`
 	SslEnabled bool   `mapstructure:"ssl-enabled"`
