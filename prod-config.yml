@@ -5,9 +5,9 @@ rest-server-config:
 tenant-config:
   - tenant-name: normal
     db-driver: pgx
-    host: localhost
+    host: db
     port: 5432
     username: postgres
     password: postgres
     jwt-key: ppLXwPy58S1lz1pVqXLR4yDgoKTowqXV
-    jwt-expired-time: 800
+    jwt-expired-time: 8

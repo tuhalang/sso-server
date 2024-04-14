@@ -2,27 +2,58 @@ package bootstrap
 
 import (
 	"context"
+	"fmt"
+	"github.com/tuhalang/authen/api/rest/controller"
+	"github.com/tuhalang/authen/api/rest/middleware"
+	"github.com/tuhalang/authen/api/rest/route"
 	"github.com/tuhalang/authen/config"
 	"github.com/tuhalang/authen/internal/logger"
-	store "github.com/tuhalang/authen/store"
+	"github.com/tuhalang/authen/repository"
+	"github.com/tuhalang/authen/store"
+	"github.com/tuhalang/authen/usecase"
 )
 
-type Application struct{}
+type Application struct {
+	appConfig *config.Config
+	restRoute route.RestRoute
+}
 
-func App(configFile string) *Application {
+func Run(configFile string) {
 	log := logger.Get()
 	ctx := context.Background()
 	appConfig := config.LoadConfig(configFile)
 
 	appStores := make(map[string]store.Store)
-	for _, dbConfig := range appConfig.Databases {
-		dbStore, err := store.NewStore(ctx, dbConfig)
+	keyStores := make(map[string]config.KeyStore)
+
+	for _, tenantCfg := range appConfig.Tenants {
+		dbStore, err := store.NewStore(ctx, tenantCfg)
 		if err != nil {
-			log.Fatal().Err(err).Msgf("Cannot init store %s", dbConfig.SpaceName)
+			log.Panic().Err(err).Msgf("Cannot init store %s", tenantCfg.TenantName)
 		} else {
-			appStores[dbConfig.SpaceName] = dbStore
+			appStores[tenantCfg.TenantName] = dbStore
+		}
+		defer dbStore.Close()
+
+		keyStores[tenantCfg.TenantName] = config.KeyStore{
+			JwtKey: tenantCfg.JwtKey,
+			JwtExp: tenantCfg.JwtExpiredTime,
 		}
 	}
 
-	return &Application{}
+	userRepository := repository.NewUserRepository(appStores)
+	sessionRepository := repository.NewSessionRepository(appStores)
+
+	loginUseCase := usecase.NewLoginUseCase(userRepository, sessionRepository, keyStores)
+	validationUseCase := usecase.NewValidationUseCase(keyStores)
+
+	loginController := controller.NewLoginController(loginUseCase)
+	validateController := controller.NewValidateController(validationUseCase)
+
+	loggingMiddleware := middleware.LoggingMiddleware()
+
+	restRoute := route.NewRestRoute(loginController, validateController, loggingMiddleware)
+
+	serverAddress := fmt.Sprintf("%s:%d", appConfig.RestServer.Host, appConfig.RestServer.Port)
+	restRoute.Run(serverAddress)
 }

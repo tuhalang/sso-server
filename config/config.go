@@ -8,24 +8,32 @@ import (
 // Config stores all the application configuration
 type Config struct {
 	RestServer RestServerConfig `mapstructure:"rest-server-config"`
-	Databases  []DatabaseConfig `mapstructure:"database-config"`
+	Tenants    []TenantConfig   `mapstructure:"tenant-config"`
 }
 
 // RestServerConfig stores all app rest server config
 type RestServerConfig struct {
-	Port       int  `mapstructure:"port"`
-	SslEnabled bool `mapstructure:"ssl-enabled"`
+	Port       int    `mapstructure:"port"`
+	Host       string `mapstructure:"host"`
+	SslEnabled bool   `mapstructure:"ssl-enabled"`
 }
 
-// DatabaseConfig stores the database connection info
-type DatabaseConfig struct {
-	Host      string `mapstructure:"host"`
-	Port      int    `mapstructure:"port"`
-	Username  string `mapstructure:"username"`
-	Password  string `mapstructure:"password"`
-	Database  string `mapstructure:"database"`
-	DBDriver  string `mapstructure:"db-driver"`
-	SpaceName string `mapstructure:"space-name"`
+// TenantConfig stores the tenant info
+type TenantConfig struct {
+	Host           string `mapstructure:"host"`
+	Port           int    `mapstructure:"port"`
+	Username       string `mapstructure:"username"`
+	Password       string `mapstructure:"password"`
+	Database       string `mapstructure:"database"`
+	DBDriver       string `mapstructure:"db-driver"`
+	TenantName     string `mapstructure:"tenant-name"`
+	JwtKey         string `mapstructure:"jwt-key"`
+	JwtExpiredTime int    `mapstructure:"jwt-expired-time"`
+}
+
+type KeyStore struct {
+	JwtKey string
+	JwtExp int
 }
 
 // LoadConfig loads all config from file

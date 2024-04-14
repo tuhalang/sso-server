@@ -5,6 +5,7 @@ create table users
     password varchar(255) not null,
     status   int
 );
+-- $2a$10$B6804z8J5G/KesCaT6oLzeshHeLg.5Rsz5s1oF0fIcKtCZAPIZAdO
 
 create table sessions
 (

@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/authen.iml" filepath="$PROJECT_DIR$/.idea/authen.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../github.com/notification/authenservice/.idea/authenservice.iml" filepath="$PROJECT_DIR$/../../github.com/notification/authenservice/.idea/authenservice.iml" />
     </modules>
   </component>
 </project>
