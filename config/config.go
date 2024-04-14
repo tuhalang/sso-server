@@ -26,6 +26,10 @@ type TenantConfig struct {
 	Password       string `mapstructure:"password"`
 	Database       string `mapstructure:"database"`
 	DBDriver       string `mapstructure:"db-driver"`
+	MaxOpenConns   int    `mapstructure:"max-open-conns"`
+	MaxIdleConns   int    `mapstructure:"max-idle-conns"`
+	ConnLifeTime   int    `mapstructure:"conn-life-time"`
+	ConnIdleTime   int    `mapstructure:"conn-idle-time"`
 	TenantName     string `mapstructure:"tenant-name"`
 	JwtKey         string `mapstructure:"jwt-key"`
 	JwtExpiredTime int    `mapstructure:"jwt-expired-time"`

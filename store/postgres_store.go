@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/jmoiron/sqlx"
 	"github.com/tuhalang/authen/domain"
+	"time"
 )
 
 const pGDriverName = "pgx"
@@ -36,11 +37,15 @@ func (store *PostgresStore) SaveSession(session domain.Session) error {
 }
 
 // NewPostgresStore create a postgres store
-func NewPostgresStore(ctx context.Context, dbURL string) (Store, error) {
+func NewPostgresStore(ctx context.Context, dbURL string, maxOpenConns, maxIdleConns, connLifeTime, connIdleTime int) (Store, error) {
 	dbx, err := sqlx.ConnectContext(ctx, pGDriverName, dbURL)
 	if err != nil {
 		return nil, err
 	}
+	dbx.SetConnMaxLifetime(time.Second * time.Duration(connLifeTime))
+	dbx.SetConnMaxIdleTime(time.Second * time.Duration(connIdleTime))
+	dbx.SetMaxIdleConns(maxIdleConns)
+	dbx.SetMaxOpenConns(maxOpenConns)
 
 	return &PostgresStore{dbx: dbx}, nil
 }

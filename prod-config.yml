@@ -9,5 +9,9 @@ tenant-config:
     port: 5432
     username: postgres
     password: postgres
+    max-open-conns: 10
+    max-idle-conns: 5
+    conn-life-time: 3600
+    conn-idle-time: 3600
     jwt-key: ppLXwPy58S1lz1pVqXLR4yDgoKTowqXV
     jwt-expired-time: 8
